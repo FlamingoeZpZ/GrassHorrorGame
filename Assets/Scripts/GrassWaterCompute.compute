@@ -1,0 +1,24 @@
+// TextureUpdater.compute
+#pragma kernel CSMain
+
+// The texture to update
+RWTexture2D<float4> Result;
+
+// The position of the transform in texture space (0 to 1)
+float2 transformPosition;
+
+// Assuming this is where you encountered the error
+[numthreads(8, 8, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID) {
+    uint width, height;
+    Result.GetDimensions(width, height); // Correct way to get dimensions
+
+    float2 transformPosition; // Assuming you have this defined somewhere appropriately
+
+    // Use width and height now
+    float dist = distance(float2(id.xy) / float2(256, 256), transformPosition);
+    float intensity = 1.0 - min(dist * 5.0, 1.0); // Example logic
+    float4 currentColor = Result[id.xy];
+    currentColor.r = max(currentColor.r, intensity); // Example modification
+    Result[id.xy] = currentColor;
+}
