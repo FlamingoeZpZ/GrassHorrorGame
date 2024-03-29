@@ -1,0 +1,42 @@
+#pragma kernel IncreaseWhitenessKernel
+
+struct CircleParams
+{
+    float2 position;
+    float radius;
+};
+
+RWTexture2D<float> Result;
+StructuredBuffer<CircleParams> CircleBuffer;
+int2 ImageSize;
+int2 WorldSize;
+float IncreaseSpeed;
+
+[numthreads(8, 8, 1)]
+void IncreaseWhitenessKernel (uint3 id : SV_DispatchThreadID)
+{
+    float2 pixelCoord = float2(id.x, id.y);
+    float2 worldCoord = pixelCoord / float2(ImageSize) * float2(WorldSize);
+
+    const float distanceToCircle = distance(worldCoord, CircleBuffer[0].position);
+
+    if (distanceToCircle < CircleBuffer[0].radius)
+    {
+        const float normalizedDistance = distanceToCircle / CircleBuffer[0].radius;
+        const float whiteAmount = 1.0f - normalizedDistance;
+
+        // Increase white value over time
+        Result[id.xy] = min(Result[id.xy] + whiteAmount * IncreaseSpeed, 1);
+    }
+}
+
+#pragma kernel DecreaseWhitenessKernel
+
+float DecreaseSpeed;
+
+[numthreads(8, 8, 1)]
+void DecreaseWhitenessKernel (uint3 id : SV_DispatchThreadID)
+{
+    // Decrease white value over time
+    Result[id.xy] = max(Result[id.xy] - DecreaseSpeed, 0.0f);
+}

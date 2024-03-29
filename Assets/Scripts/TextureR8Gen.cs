@@ -1,6 +1,4 @@
 using UnityEngine;
-using Random = UnityEngine.Random;
-using Task = System.Threading.Tasks.Task;
 
 public class TextureR8Gen : MonoBehaviour
 {
@@ -30,7 +28,7 @@ public class TextureR8Gen : MonoBehaviour
         }
     }
 
-    void Update()
+    public void Tick()
     {
         // Convert the transform position to texture space
         Vector2 textureSpacePosition = new Vector2(targetTransform.position.x / 50f, targetTransform.position.z / 50f); // Adjust based on your needs
@@ -40,5 +38,6 @@ public class TextureR8Gen : MonoBehaviour
         textureUpdater.SetTexture(kernelHandle, Result, resultTexture);
         textureUpdater.SetVector(TransformPosition, new Vector4(textureSpacePosition.x, textureSpacePosition.y, 0, 0));
         textureUpdater.Dispatch(kernelHandle, resultTexture.width / 8, resultTexture.height / 8, 1);
+        
     }
 }
