@@ -16,6 +16,8 @@ public class Buckets : MonoBehaviour
     private static readonly int IsWatering = Animator.StringToHash("IsWatering");
     private static readonly int Capacity = Animator.StringToHash("WaterCapacity");
 
+    private GameObject _child;
+
     public float WateringCapacity => _currentWater / WaterCapacity;
     public bool IsWateringCurrently { get; private set; }
     public int WateringDelay => tickTime;
@@ -24,6 +26,7 @@ public class Buckets : MonoBehaviour
     {
         _animator= GetComponent<Animator>();
         FillBucket();
+        _child = transform.GetChild(0).gameObject;
     }
 
     public void FillBucket()
@@ -39,6 +42,11 @@ public class Buckets : MonoBehaviour
         IsWateringCurrently = true;
     }
 
+    public void EnableParticle()
+    {
+        _child.SetActive(true);
+    }
+
     public void Tick()
     {
         _currentWater -= WateringCost;
@@ -52,6 +60,7 @@ public class Buckets : MonoBehaviour
     {
         _animator.SetBool(IsWatering, false);
         IsWateringCurrently = false;
+        _child.SetActive(false);
     }
 
 }
