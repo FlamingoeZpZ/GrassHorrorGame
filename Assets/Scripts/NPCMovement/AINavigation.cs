@@ -6,16 +6,17 @@ public class AINavigation : MonoBehaviour
 {
 	public Transform travelTarget;
 	private NavMeshAgent agent;
-	[SerializeField] private string MainTarget;
-
+	[SerializeField] private GameObject mainTarget;
+	private float restoreSpeed;
 	[SerializeField] private float speed = 5;
 	void Start()
 	{
-		agent=GetComponent<NavMeshAgent>();
-		travelTarget = GameObject.Find(MainTarget).transform;
+		agent = GetComponent<NavMeshAgent>();
+		travelTarget = mainTarget.transform;
 		print(travelTarget);
 		agent.SetDestination(travelTarget.position);
-		agent.speed=speed;
+		agent.speed = speed;
+		restoreSpeed = speed;
 	}
 
 	void Update()
@@ -25,9 +26,9 @@ public class AINavigation : MonoBehaviour
 
 	public IEnumerator DelayCoroutine(float delay)
 	{
-		float restoreSpeed = speed;
-		speed = 0;
+
+		agent.speed = 0;
 		yield return new WaitForSeconds(delay);
-		speed = restoreSpeed;
+		agent.speed = restoreSpeed;
 	}
 }

@@ -434,7 +434,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   travelTarget: {fileID: 0}
-  MainTarget: NavPoint
+  mainTarget: {fileID: 1207090243}
   speed: 5
 --- !u!4 &389189371
 Transform:
@@ -825,6 +825,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 859b5141046025346acd688dccbdd741, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  locattionHolder: {fileID: 1419718930}
   locations: []
 --- !u!1 &1419718930
 GameObject:

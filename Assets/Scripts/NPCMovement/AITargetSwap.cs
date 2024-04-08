@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class AITargetSwap : MonoBehaviour
 {
-	[SerializeField] private GameObject[] locations;
+	[SerializeField] GameObject locattionHolder;
+	[SerializeField] private Transform[] locations;
 	private int locationCount = 0;
 	private readonly System.Random rnd = new();
 	private int rolledNumber = 0;
@@ -12,13 +13,13 @@ public class AITargetSwap : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		locations = GameObject.FindGameObjectsWithTag("NavPoint");
+		locations = locattionHolder.GetComponentsInChildren<Transform>();
 		locationCount = locations.Length;
 	}
 
 	private void OnTriggerEnter(Collider _collider)
 	{
-		if (_collider.name == "Neighbor")
+		if (_collider.name == "Neighbour")
 		{
 			int previosVal = rolledNumber;
 			rolledNumber = rnd.Next(locationCount);
@@ -38,7 +39,7 @@ public class AITargetSwap : MonoBehaviour
 				}
 			}
 			StartCoroutine(_collider.GetComponent<AINavigation>().DelayCoroutine(rolledNumber + 2));
-			transform.position = locations[rolledNumber].transform.position;
+			transform.position = locations[rolledNumber].position;
 		}
 	}
 }
