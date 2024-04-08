@@ -14,7 +14,9 @@ public class Player : MonoBehaviour
 
     private Buckets bs;
     private GPT_ImplGrassPainter gen;
-        
+
+    public static Vector3 Position { get; private set; }
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -31,7 +33,9 @@ public class Player : MonoBehaviour
     {
         HandleMovement();
         var transform1 = transform;
-        FillUpUI.SetActive(Physics.Raycast(transform1.position, transform1.forward ,2, houseLayer));
+        var position = transform1.position;
+        FillUpUI.SetActive(Physics.Raycast(position, transform1.forward ,2, houseLayer));
+        Position = position;
     }
 
     void HandleMovement()
