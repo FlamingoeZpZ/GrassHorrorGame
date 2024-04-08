@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public struct CircleParams
 {
@@ -15,8 +14,8 @@ public class GPT_ImplGrassPainter : MonoBehaviour
     private RenderTexture _renderTexture;
     public float increaseSpeed = 0.01f; // Control the speed of increasing whiteness
     public float decreaseSpeed = 0.01f; // Control the speed of decreasing whiteness
-    public float size = 5f; // Control the speed of decreasing whiteness
-    public int grassWaterTickTimer;
+    //public float size = 5f; // Control the speed of decreasing whiteness
+    //public int grassWaterTickTimer;
     public int grassDecayTickTimer = 20;
 
     private int _increaseWhitenessKernelHandle;
@@ -31,8 +30,7 @@ public class GPT_ImplGrassPainter : MonoBehaviour
     private static readonly int IncreaseSpeed = Shader.PropertyToID("IncreaseSpeed");
     private static readonly int DecreaseSpeed = Shader.PropertyToID("DecreaseSpeed");
     private bool _running;
-    public bool isWatering;
-
+    private Buckets target;
     private void Start()
     {
         _increaseWhitenessKernelHandle = computeShader.FindKernel("IncreaseWhitenessKernel");
@@ -66,12 +64,12 @@ public class GPT_ImplGrassPainter : MonoBehaviour
     {
         while (_running)
         {
-            if (isWatering)
+            if (target.IsWateringCurrently)
             {
                 CircleParams circleParams;
                 Vector3 position = transform.position;
                 circleParams.position = new Vector2(position.x, position.z);
-                circleParams.radius = size;
+                circleParams.radius = target.WateringRange;
 
                 _circleBuffer.SetData(new[] { circleParams });
                 computeShader.SetBuffer(_increaseWhitenessKernelHandle, CircleBuffer, _circleBuffer);
@@ -79,9 +77,11 @@ public class GPT_ImplGrassPainter : MonoBehaviour
                 computeShader.SetFloat(IncreaseSpeed, increaseSpeed);
                 computeShader.Dispatch(_increaseWhitenessKernelHandle, _imageSize.x / 8, _imageSize.y / 8, 1);
                 material.mainTexture = _renderTexture;
+                
+                target.Tick();
             }
 
-            await Task.Delay(grassWaterTickTimer);
+            await Task.Delay(target.WateringDelay);
             
         }
     }
@@ -101,6 +101,13 @@ public class GPT_ImplGrassPainter : MonoBehaviour
     
     public void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(transform.position, size);
+        if (!target) target = transform.parent.GetComponentInChildren<Buckets>();
+        Gizmos.DrawWireSphere(transform.position, target.WateringRange);
+    }
+
+    public void SetBucket(Buckets bs)
+    {
+        target = bs;
+
     }
 }
