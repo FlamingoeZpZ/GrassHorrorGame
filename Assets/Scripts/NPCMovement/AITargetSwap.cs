@@ -19,27 +19,25 @@ public class AITargetSwap : MonoBehaviour
 
 	private void OnTriggerEnter(Collider _collider)
 	{
-		if (_collider.name == "Neighbour")
+		int previosVal = rolledNumber;
+		rolledNumber = rnd.Next(locationCount);
+		print(rolledNumber);
+		if (previosVal == rolledNumber)
 		{
-			int previosVal = rolledNumber;
+			sameROll = true;
+		}
+		while (sameROll)
+		{
+			print("Duplicate roll");
 			rolledNumber = rnd.Next(locationCount);
 			print(rolledNumber);
-			if (previosVal == rolledNumber)
+			if (previosVal != rolledNumber)
 			{
-				sameROll = true;
+				sameROll = false;
 			}
-			while (sameROll)
-			{
-				print("Duplicate roll");
-				rolledNumber = rnd.Next(locationCount);
-				print(rolledNumber);
-				if (previosVal != rolledNumber)
-				{
-					sameROll = false;
-				}
-			}
-			StartCoroutine(_collider.GetComponent<AINavigation>().DelayCoroutine(rolledNumber + 2));
-			transform.position = locations[rolledNumber].position;
 		}
+		StartCoroutine(_collider.GetComponent<AINavigation>().DelayCoroutine(rolledNumber + 2));
+		transform.position = locations[rolledNumber].position;
 	}
+	
 }
