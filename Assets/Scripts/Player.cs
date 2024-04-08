@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
-using Task = System.Threading.Tasks.Task;
 
 public class Player : MonoBehaviour
 {
@@ -14,6 +9,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxSpeed = 6;
     [SerializeField] private float yawSpeed;
     [SerializeField] private float pitchSpeed;
+    [SerializeField] private LayerMask houseLayer;
+    [SerializeField] private GameObject FillUpUI;
+
+    private Buckets bs;
     private GPT_ImplGrassPainter gen;
         
     // Start is called before the first frame update
@@ -21,14 +20,18 @@ public class Player : MonoBehaviour
     {
         PlayerControls.Init(this);
         rb = transform.parent.GetComponent<Rigidbody>();
+        bs = GetComponentInChildren<Buckets>();
         gen = GetComponent<GPT_ImplGrassPainter>();
         rb.maxLinearVelocity = maxSpeed;
+        gen.SetBucket(bs);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         HandleMovement();
+        var transform1 = transform;
+        FillUpUI.SetActive(Physics.Raycast(transform1.position, transform1.forward ,2, houseLayer));
     }
 
     void HandleMovement()
@@ -44,8 +47,8 @@ public class Player : MonoBehaviour
 
     public void SetWateringState(bool readValueAsButton)
     {
-        gen.isWatering = readValueAsButton;
-        //Also begin and/or end VFX.
+        if(readValueAsButton) bs.StartWatering();
+        else bs.StopWatering();
     }
 
 
@@ -84,7 +87,11 @@ public class Player : MonoBehaviour
     }
 
 
-
-
-
+    public void FillBucket()
+    {
+        if (Physics.Raycast(transform.position, transform.forward, 2, houseLayer))
+        {
+            bs.FillBucket();
+        }
+    }
 }

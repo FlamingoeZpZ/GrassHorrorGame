@@ -11,6 +11,7 @@ public static class PlayerControls
         _wetness.Socks.Move.performed += x => p.SetMoveDirection(x.ReadValue<Vector3>());
         _wetness.Socks.Look.performed += x => p.MoveCamera(x.ReadValue<Vector2>());
         _wetness.Socks.Water.performed += x => p.SetWateringState(x.ReadValueAsButton());
+        _wetness.Socks.Interact.performed += x => p.FillBucket();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         EnableGameControls();

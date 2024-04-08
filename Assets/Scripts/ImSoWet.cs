@@ -53,6 +53,15 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2e7fcdc-2347-46ea-b342-e9ef3bedef4f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +141,17 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
                     ""action"": ""Look"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d5a02524-7f93-4c21-9eb1-00ff2b44c96a"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +163,7 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
         m_Socks_Move = m_Socks.FindAction("Move", throwIfNotFound: true);
         m_Socks_Water = m_Socks.FindAction("Water", throwIfNotFound: true);
         m_Socks_Look = m_Socks.FindAction("Look", throwIfNotFound: true);
+        m_Socks_Interact = m_Socks.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -207,6 +228,7 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
     private readonly InputAction m_Socks_Move;
     private readonly InputAction m_Socks_Water;
     private readonly InputAction m_Socks_Look;
+    private readonly InputAction m_Socks_Interact;
     public struct SocksActions
     {
         private @ImSoWet m_Wrapper;
@@ -214,6 +236,7 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Socks_Move;
         public InputAction @Water => m_Wrapper.m_Socks_Water;
         public InputAction @Look => m_Wrapper.m_Socks_Look;
+        public InputAction @Interact => m_Wrapper.m_Socks_Interact;
         public InputActionMap Get() { return m_Wrapper.m_Socks; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -232,6 +255,9 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
             @Look.started += instance.OnLook;
             @Look.performed += instance.OnLook;
             @Look.canceled += instance.OnLook;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         private void UnregisterCallbacks(ISocksActions instance)
@@ -245,6 +271,9 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
             @Look.started -= instance.OnLook;
             @Look.performed -= instance.OnLook;
             @Look.canceled -= instance.OnLook;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         public void RemoveCallbacks(ISocksActions instance)
@@ -267,5 +296,6 @@ public partial class @ImSoWet: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnWater(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
